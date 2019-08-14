@@ -1,0 +1,48 @@
+{
+    "name": "texas-hold-em",
+    "version": "0.1.0",
+    "description": "Shows you your strongest hand in a game of Texas Hold'em poker",
+    "main": "./src/index.js",
+    "scripts": {
+        "start": "node ./src/bin/www",
+        "start:dev": "nodemon -L --inspect=0.0.0.0:9229 -e .js,.json,.njk,.yml --ignore src/openapi/openapi.json --exec npm run build:run",
+        "openapi:build": "speccy lint src/openapi/src/openapi-src.json -j && speccy resolve ./src/openapi/src/openapi-src.json -j | yaml2json --pretty --indentation 4 --save - > ./src/openapi/openapi.json && node ./src/openapi/src/dereference-openapi.js",
+        "openapi:gentests": "node src/openapi/src/generate-tests.js",
+        "build:run": "npm run openapi:build && npm run start",
+        "pretest": "eslint .",
+        "sass": "node-sass -w ./src/css/ -o ./src/static/assets/css/",
+        "test": "jest",
+        "coverage": "jest --coverage"
+    },
+    "author": "Adrian Roworth",
+    "license": "MIT",
+    "devDependencies": {
+        "eslint": "^5.16.0",
+        "eslint-config-airbnb-base": "^13.1.0",
+        "eslint-config-prettier": "^4.3.0",
+        "eslint-plugin-import": "^2.17.2",
+        "eslint-plugin-jest": "^22.5.1",
+        "eslint-plugin-prettier": "^3.1.0",
+        "husky": "^2.3.0",
+        "jest": "^24.8.0",
+        "jest-json-schema": "^2.0.2",
+        "lint-staged": "^8.1.7",
+        "node-sass": "^4.12.0",
+        "nodemon": "^1.19.1",
+        "speccy": "github:wework/speccy#740d19d88935db7735250c16abc2ad09256b5854",
+        "supertest": "^4.0.2",
+        "yamljs": "^0.3.0"
+    },
+    "dependencies": {
+        "body-parser": "^1.18.3",
+        "debug": "^4.1.1",
+        "ejs": "^2.6.1",
+        "express": "^4.16.4",
+        "express-handlebars": "^3.0.2",
+        "json-schema-ref-parser": "^7.1.0",
+        "lodash.merge": "^4.6.2",
+        "path": "^0.12.7",
+        "prettier": "^1.18.2",
+        "swagger-ui-express": "^4.0.6"
+    }
+}

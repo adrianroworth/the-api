@@ -1,0 +1,25 @@
+# https://jasonstitt.com/gitignore-whitelisting-patterns
+# Disallow all files - allows for whitelist instead of blacklist
+*
+
+# Allow specific file with a !
+# e.g. !specific_file
+
+# Works with directories in Docker
+# e.g. !my_directory/
+
+# Works with directories in Npm
+# e.g. !my_directory/**/*
+
+# add these back in.
+!.dockerignore
+!.editorconfig
+!.gitignore
+!CHANGELOG.md
+!jest.config.js
+!package.json
+!package-lock.json
+!README.md
+
+!src/
+!test/
