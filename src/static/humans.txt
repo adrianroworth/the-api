@@ -1,0 +1,11 @@
+/* TEAM */
+	Developer: Adrian Roworth
+	Twitter: @adrianroworth
+	From: Glasgow, Scotland
+
+/* SITE */
+	Last update: 03/07/2019
+	Language: English
+	Doctype: HTML5
+	IDE: Visual Studio Code
+	Standards: OpenAPI3, JSON Schema

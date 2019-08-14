@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "string",
+    "enum": [
+        "high-card",
+        "pair",
+        "two-pairs",
+        "three-of-a-kind",
+        "straight",
+        "flush",
+        "full-house",
+        "four-of-a-kind",
+        "straight-flush",
+        "royal-flush"
+    ],
+    "pattern": "^[a-zA-Z-]{1,15}$"
+}

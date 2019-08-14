@@ -1,0 +1,35 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["data"],
+    "properties": {
+        "data": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["type", "attributes"],
+                "properties": {
+                    "type": {
+                        "const": "cards"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "properties": {
+                            "cards": {
+                                "type": "array",
+                                "uniqueItems": true,
+                                "minItems": 7,
+                                "maxItems": 7,
+                                "items": {
+                                    "type": "string",
+                                    "pattern": "^([1-9]|1[0-2])-[s,h,d,c]$"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

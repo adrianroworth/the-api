@@ -1,0 +1,40 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "required": ["data"],
+    "properties": {
+        "data": {
+            "type": "object",
+            "required": ["type", "id", "attributes"],
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "const": "descriptions"
+                },
+                "id": {
+                    "type": "string",
+                    "enum": [
+                        "high-card",
+                        "pair",
+                        "two-pairs",
+                        "three-of-a-kind",
+                        "straight",
+                        "flush",
+                        "full-house",
+                        "four-of-a-kind",
+                        "straight-flush",
+                        "royal-flush"
+                    ]
+                },
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "description": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

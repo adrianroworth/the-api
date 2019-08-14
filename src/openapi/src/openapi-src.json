@@ -1,0 +1,408 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Texas Help 'Em API",
+        "description": "Manage a players hand in a given game of Texas Hold 'Em",
+        "version": "1.0.0",
+        "license": {
+            "name": "MIT"
+        },
+        "contact": {
+            "name": "API Support",
+            "email": "api@adrianroworth.co.uk"
+        }
+    },
+    "servers": [
+        {
+            "url": "/api/v1"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Hands"
+        }
+    ],
+    "paths": {
+        "/hands/": {
+            "post": {
+                "tags": ["Hands"],
+                "summary": "Gets all valid hand types for the set of cards posted",
+                "operationId": "getHands",
+                "x-requests": {
+                    "400": {
+                        "requestBody": {
+                            "content": {
+                                "application/vnd.api+json": {
+                                    "example": {
+                                        "data": {
+                                            "cards": [
+                                                "20-s",
+                                                "3-x",
+                                                "3-h",
+                                                "10-s",
+                                                "9-p",
+                                                "6-s",
+                                                "4-c"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "description": "Array of 7 card IDs",
+                    "required": true,
+                    "content": {
+                        "application/vnd.api+json": {
+                            "schema": {
+                                "$ref": "./json-schemas/paths/_hands/post/req/200.json"
+                            },
+                            "example": {
+                                "data": {
+                                    "cards": ["1-s", "3-s", "3-h", "10-s", "9-d", "6-s", "4-c"]
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "./json-schemas/paths/_hands_{handName}/post/res/200.json"
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "type": "hands",
+                                            "id": "high-card",
+                                            "attributes": {
+                                                "cards": {
+                                                    "best": {
+                                                        "cardCode": "1-s",
+                                                        "cardValue": 1,
+                                                        "cardSuit": "spades",
+                                                        "cardName": "ace",
+                                                        "card": "ace of spades"
+                                                    },
+                                                    "all": [
+                                                        {
+                                                            "cardCode": "1-s",
+                                                            "cardValue": 1,
+                                                            "cardSuit": "spades",
+                                                            "cardName": "ace",
+                                                            "card": "ace of spades"
+                                                        }
+                                                    ]
+                                                },
+                                                "description": "High ace",
+                                                "precedence": 0,
+                                                "name": "High Card"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                }
+            }
+        },
+        "/hands/{handName}": {
+            "post": {
+                "tags": ["Hands"],
+                "summary": "Validates a set of cards against a hand type",
+                "operationId": "getHand",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/handName"
+                    }
+                ],
+                "x-requests": {
+                    "400": {
+                        "parameters": [
+                            {
+                                "name": "handName",
+                                "example": "not-a-hand-name"
+                            }
+                        ]
+                    },
+                    "401": {
+                        "auth": false
+                    },
+                    "403": {
+                        "x-scopes": ["create:dummy-resource"]
+                    },
+                    "404": {
+                        "parameters": [
+                            {
+                                "name": "handName",
+                                "example": "blah-blah-not-real-hand-name"
+                            }
+                        ]
+                    }
+                },
+                "requestBody": {
+                    "description": "Array of 7 card IDs",
+                    "required": true,
+                    "content": {
+                        "application/vnd.api+json": {
+                            "schema": {
+                                "$ref": "./json-schemas/paths/_hands_{handName}/post/req/200.json"
+                            },
+                            "example": {
+                                "data": [
+                                    {
+                                        "type": "cards",
+                                        "attributes": {
+                                            "cards": [
+                                                "1-s",
+                                                "3-s",
+                                                "3-h",
+                                                "10-s",
+                                                "9-d",
+                                                "6-s",
+                                                "4-c"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "./json-schemas/paths/_hands_{handName}/post/res/200.json"
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "type": "cards",
+                                            "id": "pair",
+                                            "attributes": {
+                                                "cards": {
+                                                    "best": ["3-s", "3-h"],
+                                                    "all": [["3-s", "3-h"]]
+                                                },
+                                                "description": "Pair of threes"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                }
+            }
+        },
+        "/hands/{handName}/precedence": {
+            "get": {
+                "tags": ["Hands"],
+                "summary": "Get the precedence of a specified hand name",
+                "operationId": "getHandPrecedence",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/handName"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "./json-schemas/paths/_hands_{handName}_precedence/get/res/200.json"
+                                },
+                                "example": {
+                                    "data": {
+                                        "type": "precedences",
+                                        "id": "full-house",
+                                        "attributes": {
+                                            "precedence": 5
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                }
+            }
+        },
+        "/hands/{handName}/description": {
+            "get": {
+                "tags": ["Hands"],
+                "summary": "Get the description of a specified hand name",
+                "operationId": "getHandDescription",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/handName"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "./json-schemas/paths/_hands_{handName}_description/get/res/200.json"
+                                },
+                                "example": {
+                                    "data": {
+                                        "type": "descriptions",
+                                        "id": "full-house",
+                                        "attributes": {
+                                            "description": "Combination of three of a kind and a pair"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "handName": {
+                "name": "handName",
+                "in": "path",
+                "required": true,
+                "description": "The name of the hand type",
+                "schema": {
+                    "$ref": "./json-schemas/parameters/handName.json"
+                },
+                "example": "full-house"
+            }
+        },
+        "responses": {
+            "BadRequest": {
+                "description": "There is an issue with the request",
+                "content": {
+                    "application/vnd.api+json": {
+                        "schema": {
+                            "$ref": "./json-schemas/responses/400.json"
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "status": 400,
+                                    "title": "400 Bad Request",
+                                    "detail": "Request JSON is malformed"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "UnauthorizedError": {
+                "description": "Access token is missing or invalid",
+                "content": {
+                    "application/vnd.api+json": {
+                        "schema": {
+                            "$ref": "./json-schemas/responses/401.json"
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "status": 401,
+                                    "detail": "No authorization token was found"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "Forbidden": {
+                "description": "The JWT doesn't permit access to this endpoint",
+                "content": {
+                    "application/vnd.api+json": {
+                        "schema": {
+                            "$ref": "./json-schemas/responses/403.json"
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "status": 403,
+                                    "title": "403 Forbidden",
+                                    "detail": "Insufficient scope"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "NotFound": {
+                "description": "The specified resource was not found",
+                "content": {
+                    "application/vnd.api+json": {
+                        "schema": {
+                            "$ref": "./json-schemas/responses/404.json"
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "status": 404,
+                                    "title": "404 Not Found",
+                                    "detail": "Resource /api/v1/url does not exist"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "Conflict": {
+                "description": "Conflict",
+                "content": {
+                    "application/vnd.api+json": {
+                        "schema": {
+                            "$ref": "./json-schemas/responses/409.json"
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "status": 409,
+                                    "title": "409 conflict",
+                                    "detail": "Endpoint /api/v1/questionnaires/68653be7-877f-4106-b91e-4ba8dac883f3/sections/system/answers accepts only resources of type \"answers\""
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

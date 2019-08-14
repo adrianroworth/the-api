@@ -2,6 +2,11 @@
 # Disallow all files - allows for whitelist instead of blacklist
 *
 
+# But descend into directories
+!*/
+# except node_modules
+node_modules/
+
 # Allow specific file with a !
 # e.g. !specific_file
 
@@ -20,6 +25,5 @@
 !package.json
 !package-lock.json
 !README.md
-
-!src/
-!test/
+!src/**
+!test/**
