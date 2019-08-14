@@ -19,8 +19,14 @@ node_modules/
 # add these back in.
 !.dockerignore
 !.editorconfig
+!.eslintrc.js
+!.gitattributes
 !.gitignore
+!.huskyrc.js
+!.lintstagedrc.js
+!.prettierrc.js
 !CHANGELOG.md
+!Dockerfile
 !jest.config.js
 !package.json
 !package-lock.json
