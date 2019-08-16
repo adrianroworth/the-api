@@ -35,15 +35,18 @@
                                 "application/vnd.api+json": {
                                     "example": {
                                         "data": {
-                                            "cards": [
-                                                "20-s",
-                                                "3-x",
-                                                "3-h",
-                                                "10-s",
-                                                "9-p",
-                                                "6-s",
-                                                "4-c"
-                                            ]
+                                            "type": "hands",
+                                            "attributes": {
+                                                "cards": [
+                                                    "20-s",
+                                                    "3-x",
+                                                    "3-h",
+                                                    "10-s",
+                                                    "9-p",
+                                                    "6-s",
+                                                    "4-c"
+                                                ]
+                                            }
                                         }
                                     }
                                 }
@@ -61,7 +64,10 @@
                             },
                             "example": {
                                 "data": {
-                                    "cards": ["1-s", "3-s", "3-h", "10-s", "9-d", "6-s", "4-c"]
+                                    "type": "hands",
+                                    "attributes": {
+                                        "cards": ["1-s", "3-s", "3-h", "10-s", "9-d", "6-s", "4-c"]
+                                    }
                                 }
                             }
                         }
@@ -73,7 +79,7 @@
                         "content": {
                             "application/vnd.api+json": {
                                 "schema": {
-                                    "$ref": "./json-schemas/paths/_hands_{handName}/post/res/200.json"
+                                    "$ref": "./json-schemas/paths/_hands/post/res/200.json"
                                 },
                                 "example": {
                                     "data": [
@@ -111,9 +117,6 @@
                     },
                     "400": {
                         "$ref": "#/components/responses/BadRequest"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/NotFound"
                     }
                 }
             }
@@ -130,18 +133,28 @@
                 ],
                 "x-requests": {
                     "400": {
-                        "parameters": [
-                            {
-                                "name": "handName",
-                                "example": "not-a-hand-name"
+                        "requestBody": {
+                            "content": {
+                                "application/vnd.api+json": {
+                                    "example": {
+                                        "data": {
+                                            "type": "hands",
+                                            "attributes": {
+                                                "cards": [
+                                                    "20-s",
+                                                    "3-x",
+                                                    "3-h",
+                                                    "10-s",
+                                                    "9-p",
+                                                    "6-s",
+                                                    "4-c"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                        ]
-                    },
-                    "401": {
-                        "auth": false
-                    },
-                    "403": {
-                        "x-scopes": ["create:dummy-resource"]
+                        }
                     },
                     "404": {
                         "parameters": [
@@ -161,22 +174,12 @@
                                 "$ref": "./json-schemas/paths/_hands_{handName}/post/req/200.json"
                             },
                             "example": {
-                                "data": [
-                                    {
-                                        "type": "cards",
-                                        "attributes": {
-                                            "cards": [
-                                                "1-s",
-                                                "3-s",
-                                                "3-h",
-                                                "10-s",
-                                                "9-d",
-                                                "6-s",
-                                                "4-c"
-                                            ]
-                                        }
+                                "data": {
+                                    "type": "hands",
+                                    "attributes": {
+                                        "cards": ["1-s", "3-s", "3-h", "10-s", "9-d", "9-s", "9-c"]
                                     }
-                                ]
+                                }
                             }
                         }
                     }
@@ -190,19 +193,49 @@
                                     "$ref": "./json-schemas/paths/_hands_{handName}/post/res/200.json"
                                 },
                                 "example": {
-                                    "data": [
-                                        {
-                                            "type": "cards",
-                                            "id": "pair",
-                                            "attributes": {
-                                                "cards": {
-                                                    "best": ["3-s", "3-h"],
-                                                    "all": [["3-s", "3-h"]]
-                                                },
-                                                "description": "Pair of threes"
-                                            }
+                                    "data": {
+                                        "type": "hands",
+                                        "id": "pair",
+                                        "attributes": {
+                                            "cards": {
+                                                "best": [
+                                                    {
+                                                        "cardCode": "3-s",
+                                                        "cardValue": 3,
+                                                        "cardSuit": "spades",
+                                                        "cardName": "three",
+                                                        "card": "three of spades"
+                                                    },
+                                                    {
+                                                        "cardCode": "3-h",
+                                                        "cardValue": 3,
+                                                        "cardSuit": "hearts",
+                                                        "cardName": "three",
+                                                        "card": "three of hearts"
+                                                    }
+                                                ],
+                                                "all": [
+                                                    [
+                                                        {
+                                                            "cardCode": "3-s",
+                                                            "cardValue": 3,
+                                                            "cardSuit": "spades",
+                                                            "cardName": "three",
+                                                            "card": "three of spades"
+                                                        },
+                                                        {
+                                                            "cardCode": "3-h",
+                                                            "cardValue": 3,
+                                                            "cardSuit": "hearts",
+                                                            "cardName": "three",
+                                                            "card": "three of hearts"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "description": "Pair of threes"
                                         }
-                                    ]
+                                    }
                                 }
                             }
                         }
@@ -226,6 +259,16 @@
                         "$ref": "#/components/parameters/handName"
                     }
                 ],
+                "x-requests": {
+                    "404": {
+                        "parameters": [
+                            {
+                                "name": "handName",
+                                "example": "not-a-hand-name"
+                            }
+                        ]
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -246,9 +289,6 @@
                             }
                         }
                     },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
                     "404": {
                         "$ref": "#/components/responses/NotFound"
                     }
@@ -265,6 +305,16 @@
                         "$ref": "#/components/parameters/handName"
                     }
                 ],
+                "x-requests": {
+                    "404": {
+                        "parameters": [
+                            {
+                                "name": "handName",
+                                "example": "not-a-hand-name"
+                            }
+                        ]
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -284,9 +334,6 @@
                                 }
                             }
                         }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
                     },
                     "404": {
                         "$ref": "#/components/responses/NotFound"

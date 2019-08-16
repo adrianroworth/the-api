@@ -6,17 +6,28 @@
     "properties": {
         "data": {
             "type": "object",
-            "additionalProperties": false,
-            "required": ["cards"],
-            "properties": {
-                "cards": {
-                    "type": "array",
-                    "uniqueItems": true,
-                    "minItems": 7,
-                    "maxItems": 7,
-                    "items": {
-                        "type": "string",
-                        "pattern": "^([1-9]|1[0-2])-[s,h,d,c]$"
+            "items": {
+                "required": ["type", "attributes"],
+                "additionalProperties": false,
+                "properties": {
+                    "type": {
+                        "const": "hands"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "cards": {
+                                "type": "array",
+                                "uniqueItems": true,
+                                "minItems": 7,
+                                "maxItems": 7,
+                                "items": {
+                                    "type": "string",
+                                    "pattern": "^([1-9]|1[0-2])-[s,h,d,c]$"
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -1,21 +1,23 @@
 const express = require('express');
+const VError = require('verror');
+
 const TexasHelpEm = require('../../lib/texasHelpEm');
+const handsData = require('../../lib/handsData')();
+const createValidationService = require('../../services/validation-service');
 
 const router = express.Router();
-const handsData = require('../../lib/handsData')();
 
 const regXHandName = /^[a-zA-Z-]{1,30}$/;
-const regXCardId = /^([1-9]|1[0-3])-[shdc]$/;
 
 router.get('/hands/:handName/precedence', (req, res) => {
     const { handName } = req.params;
     const hand = handsData.hands[handName];
 
     if (!regXHandName.test(handName) || !hand) {
-        const err = Error(`Bad request`);
+        const err = Error(`Hand name ${handName} does not exist`);
         err.name = 'HTTPError';
-        err.statusCode = 400;
-        err.error = '400 Bad Request';
+        err.statusCode = 404;
+        err.error = '404 Not Found';
         throw err;
     }
 
@@ -36,10 +38,10 @@ router.get('/hands/:handName/description', (req, res) => {
     const hand = handsData.hands[handName];
 
     if (!regXHandName.test(handName) || !hand) {
-        const err = Error(`Bad request`);
+        const err = Error(`Hand name ${handName} does not exist`);
         err.name = 'HTTPError';
-        err.statusCode = 400;
-        err.error = '400 Bad Request';
+        err.statusCode = 404;
+        err.error = '404 Not Found';
         throw err;
     }
 
@@ -58,39 +60,19 @@ router.get('/hands/:handName/description', (req, res) => {
 router.post('/hands/:handName', (req, res) => {
     const { handName } = req.params;
     const hand = handsData.hands[handName];
-    const cards = req.body.data && req.body.data[0].attributes && req.body.data[0].attributes.cards;
+    const cards = req.body.data && req.body.data.attributes && req.body.data.attributes.cards;
+    const validationService = createValidationService();
 
-    if (!cards || !Array.isArray(cards)) {
-        const err = Error(`Bad Request. "cards" needs to be an array of card IDs`);
-        err.name = 'HTTPError';
-        err.statusCode = 400;
-        err.error = '400 Bad Request';
-        throw err;
-    }
+    validationService.validateCardSet(cards);
 
     // does the hand type exist?
     if (!regXHandName.test(handName) || !hand) {
-        const err = Error(`Bad Request. ${handName} is not a valid hand name`);
-        err.name = 'HTTPError';
-        err.statusCode = 400;
-        err.error = '400 Bad Request';
-        throw err;
-    }
-
-    const invalidCards = [];
-    cards.forEach(x => {
-        if (!regXCardId.test(x)) {
-            invalidCards.push(x);
-        }
-    });
-
-    // does every card id conform to the card id pattern?
-    if (invalidCards.length) {
-        const err = Error(`400 Bad Request. Malformed card IDs: '${invalidCards.join(', ')}'`);
-        err.name = 'HTTPError';
-        err.statusCode = 400;
-        err.error = '400 Bad Request';
-        throw err;
+        throw new VError(
+            {
+                name: 'ResourceNotFound'
+            },
+            `Hand name ${handName} does not exist`
+        );
     }
 
     const HelpEm = TexasHelpEm();
@@ -109,31 +91,10 @@ router.post('/hands/:handName', (req, res) => {
 });
 
 router.post('/hands', (req, res) => {
-    const cards = req.body.data && req.body.data.cards;
+    const cards = req.body.data && req.body.data.attributes && req.body.data.attributes.cards;
+    const validationService = createValidationService();
 
-    if (!cards || !Array.isArray(cards)) {
-        const err = Error(`Bad Request. "cards" needs to be an array of card IDs`);
-        err.name = 'HTTPError';
-        err.statusCode = 400;
-        err.error = '400 Bad Request';
-        throw err;
-    }
-
-    const invalidCards = [];
-    cards.forEach(x => {
-        if (!regXCardId.test(x)) {
-            invalidCards.push(x);
-        }
-    });
-
-    // does every card id conform to the card id pattern?
-    if (invalidCards.length) {
-        const err = Error(`400 Bad Request. Malformed card IDs: '${invalidCards.join(', ')}'`);
-        err.name = 'HTTPError';
-        err.statusCode = 400;
-        err.error = '400 Bad Request';
-        throw err;
-    }
+    validationService.validateCardSet(cards);
 
     const HelpEm = TexasHelpEm();
     HelpEm.setCards(cards);

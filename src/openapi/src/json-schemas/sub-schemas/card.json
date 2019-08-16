@@ -10,50 +10,126 @@
             "required": ["best", "all"],
             "properties": {
                 "best": {
-                    "type": "object",
-                    "required": ["cardCode", "cardValue", "cardSuit", "cardName", "card"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "cardCode": {
-                            "type": "string"
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "required": ["cardCode", "cardValue", "cardSuit", "cardName", "card"],
+                            "additionalProperties": false,
+                            "properties": {
+                                "cardCode": {
+                                    "type": "string"
+                                },
+                                "cardValue": {
+                                    "type": "integer"
+                                },
+                                "cardSuit": {
+                                    "type": "string"
+                                },
+                                "cardName": {
+                                    "type": "string"
+                                },
+                                "card": {
+                                    "type": "string"
+                                }
+                            }
                         },
-                        "cardValue": {
-                            "type": "integer"
-                        },
-                        "cardSuit": {
-                            "type": "string"
-                        },
-                        "cardName": {
-                            "type": "string"
-                        },
-                        "card": {
-                            "type": "string"
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "required": [
+                                    "cardCode",
+                                    "cardValue",
+                                    "cardSuit",
+                                    "cardName",
+                                    "card"
+                                ],
+                                "additionalProperties": false,
+                                "properties": {
+                                    "cardCode": {
+                                        "type": "string"
+                                    },
+                                    "cardValue": {
+                                        "type": "integer"
+                                    },
+                                    "cardSuit": {
+                                        "type": "string"
+                                    },
+                                    "cardName": {
+                                        "type": "string"
+                                    },
+                                    "card": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
                         }
-                    }
+                    ]
                 },
                 "all": {
                     "type": "array",
                     "items": {
-                        "type": "object",
-                        "required": ["cardCode", "cardValue", "cardSuit", "cardName", "card"],
-                        "additionalProperties": false,
-                        "properties": {
-                            "cardCode": {
-                                "type": "string"
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "required": [
+                                    "cardCode",
+                                    "cardValue",
+                                    "cardSuit",
+                                    "cardName",
+                                    "card"
+                                ],
+                                "additionalProperties": false,
+                                "properties": {
+                                    "cardCode": {
+                                        "type": "string"
+                                    },
+                                    "cardValue": {
+                                        "type": "integer"
+                                    },
+                                    "cardSuit": {
+                                        "type": "string"
+                                    },
+                                    "cardName": {
+                                        "type": "string"
+                                    },
+                                    "card": {
+                                        "type": "string"
+                                    }
+                                }
                             },
-                            "cardValue": {
-                                "type": "integer"
-                            },
-                            "cardSuit": {
-                                "type": "string"
-                            },
-                            "cardName": {
-                                "type": "string"
-                            },
-                            "card": {
-                                "type": "string"
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "required": [
+                                        "cardCode",
+                                        "cardValue",
+                                        "cardSuit",
+                                        "cardName",
+                                        "card"
+                                    ],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "cardCode": {
+                                            "type": "string"
+                                        },
+                                        "cardValue": {
+                                            "type": "integer"
+                                        },
+                                        "cardSuit": {
+                                            "type": "string"
+                                        },
+                                        "cardName": {
+                                            "type": "string"
+                                        },
+                                        "card": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
                             }
-                        }
+                        ]
                     }
                 }
             }

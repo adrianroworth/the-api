@@ -69,33 +69,33 @@ function createHandsData() {
         return sortedCards;
     }
 
-    function getCardsGroupedByValue(playerCards, cardQuanity) {
+    function getCardsGroupedByValue(playerCards, cardQuantity) {
         const cardsClone = playerCards.slice(0);
         const cardValues = []; // a list of all the card values that there are 'cardQuanity' of.
         const set = [];
 
         const cardQuantityLookup = getCardQuantities(cardsClone);
 
-        // get all the card values that there are more than 'cardQuanity - 1' of.
-        // i.e. 'cardQuanity' or more.
+        // get all the card values that there are more than 'cardQuantity - 1' of.
+        // i.e. 'cardQuantity' or more.
         Object.keys(cardQuantityLookup).forEach(cardValue => {
-            if (cardQuantityLookup[cardValue] > cardQuanity - 1) {
-                cardValues.push(cardValue);
+            if (cardQuantityLookup[cardValue] > cardQuantity - 1) {
+                cardValues.push(Number.parseInt(cardValue, 10));
             }
         });
 
         // are there any pairs?
         if (cardValues.length) {
             // descending order.
-            cardValues.sort().reverse();
+            cardValues.sort((a, b) => a - b).reverse();
             cardValues.forEach(cardValue => {
                 const anotherSet = [];
                 cardsClone.forEach(card => {
                     // iterate through the 'cardValues' and push the
-                    // corrisponding cards to an array that will end of being
-                    // a length of 'cardQuanity'.
+                    // corresponding cards to an array that will end of being
+                    // a length of 'cardQuantity'.
                     if (
-                        anotherSet.length !== cardQuanity &&
+                        anotherSet.length !== cardQuantity &&
                         card.cardValue === Number.parseInt(cardValue, 10)
                     ) {
                         anotherSet.push(card);
@@ -133,7 +133,8 @@ function createHandsData() {
         }
 
         if (set.length) {
-            return set;
+            // return last 5 items in the array as they will be of the highest value.
+            return set.slice(-5);
         }
 
         return false;
@@ -481,11 +482,11 @@ function createHandsData() {
             rule: playerCards => {
                 let cardsClone = playerCards.slice(0);
                 const flush = hands.flush.rule(cardsClone.slice(0));
-                // the 'straight'-finding logic relys on the card value only. so if there are 2 cards
+                // the 'straight'-finding logic relies on the card value only. so if there are 2 cards
                 // with the same value, but different suit, then they will produce the same
                 // resulting 'straight'. i.e. a ten of clubs, and a ten of hearts will
                 // give the same resulting straight "strength". The royal flush logic also
-                // relys on this 'straight' logic (and the flush logic) due to this being "DRY". for a royal
+                // relies on this 'straight' logic (and the flush logic) due to this being "DRY". for a royal
                 // flush to be found, we  need to have the cards have all the same suit (a flush), and all
                 // the cards to be the values 10 through ace. If the flush that is found does not have all
                 // of the same suit, then the royal flush would never be found. e.g:
@@ -493,7 +494,7 @@ function createHandsData() {
                 // ['1-s', '10-s', '13-c', '13-s', '5-h', '12-s', '11-s']
                 // then a straight containing ['10-s', '11-s'. '12-s', '13-c' '1-s'] would
                 // be found. This is because it was originally only sorted by card value, and did not consider
-                // card suit. Given that the '13-c' card preceeds the '13-s', the '13-c' card is first first and
+                // card suit. Given that the '13-c' card precedes the '13-s', the '13-c' card is first first and
                 // is then added to the resulting straight. This poses a problem when trying to find a royal
                 // flush, for example, because even though the cards contained a royal flush, the 'straight' logic
                 // fail to find a 1-suit straight.
@@ -503,7 +504,6 @@ function createHandsData() {
                 const straight = hands.straight.rule(cardsClone.slice(0));
                 const sets = [];
 
-                // console.log({straight, flush});
                 // if it isn't a straight flush, then don't waste any more time on it.
                 if (!straight || !flush) {
                     return false;

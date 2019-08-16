@@ -61,23 +61,6 @@ function createTexasHelpEm() {
     }
 
     function setCards(cards) {
-        // wrong number of cards supplied.
-        if (cards.length !== 7) {
-            const error = new Error();
-            error.statusCode = 400;
-            error.title = 'Bad Request';
-            error.message = 'Request must contain an array with 7 elements';
-            throw error;
-        }
-        // duplicate cards supplied.
-        if (cards.length !== new Set(cards).size) {
-            const error = new Error();
-            error.statusCode = 400;
-            error.title = 'Bad Request';
-            error.message = 'Request must contain 7 unique elements';
-            throw error;
-        }
-
         playerCards = helpers.sortCardsByCardValue(transformCards(cards));
         winningHands = assertainHands();
     }

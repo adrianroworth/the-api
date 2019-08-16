@@ -1,0 +1,75 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "required": ["cards", "description", "precedence", "name"],
+    "additionalProperties": false,
+    "properties": {
+        "cards": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["best", "all"],
+            "properties": {
+                "best": {
+                    "type": "object",
+                    "required": ["cardCode", "cardValue", "cardSuit", "cardName", "card"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "cardCode": {
+                            "type": "string"
+                        },
+                        "cardValue": {
+                            "type": "integer"
+                        },
+                        "cardSuit": {
+                            "type": "string"
+                        },
+                        "cardName": {
+                            "type": "string"
+                        },
+                        "card": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "all": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["cardCode", "cardValue", "cardSuit", "cardName", "card"],
+                        "additionalProperties": false,
+                        "properties": {
+                            "cardCode": {
+                                "type": "string"
+                            },
+                            "cardValue": {
+                                "type": "integer"
+                            },
+                            "cardSuit": {
+                                "type": "string"
+                            },
+                            "cardName": {
+                                "type": "string"
+                            },
+                            "card": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "description": {
+            "type": "string",
+            "maxLength": 200
+        },
+        "precedence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 9
+        },
+        "name": {
+            "type": "string",
+            "maxLength": 20
+        }
+    }
+}

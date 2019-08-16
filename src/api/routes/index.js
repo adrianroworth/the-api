@@ -27,7 +27,7 @@ const router = express.Router();
 router.use('/api/v1/', require('./api'));
 
 // catch-all 404 page.
-router.get('*', (req, res) => {
+router.get('*', req => {
     const err = Error(`Endpoint ${req.url} does not exist`);
     err.name = 'HTTPError';
     err.statusCode = 404;

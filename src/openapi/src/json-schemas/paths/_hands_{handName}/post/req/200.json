@@ -5,16 +5,17 @@
     "required": ["data"],
     "properties": {
         "data": {
-            "type": "array",
+            "type": "object",
             "items": {
-                "type": "object",
                 "required": ["type", "attributes"],
+                "additionalProperties": false,
                 "properties": {
                     "type": {
-                        "const": "cards"
+                        "const": "hands"
                     },
                     "attributes": {
                         "type": "object",
+                        "additionalProperties": false,
                         "properties": {
                             "cards": {
                                 "type": "array",
