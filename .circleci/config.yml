@@ -89,8 +89,4 @@ workflows:
        - build
        - deploy:
            requires:
-#              - build_for_test
              - build
-           filters:
-             branches:
-               only: master # only deploy on the master branch
