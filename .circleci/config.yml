@@ -1,0 +1,30 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/node:12.16.1
+    steps:
+      - run:
+          name: Update npm to v6.14.4
+          command: sudo npm install -g npm@6.14.4
+      - run:
+          name: npm audit
+          command: npm audit --production --audit-level=moderate
+  test:
+    docker:
+      - image: circleci/node:12.16.1
+    steps:
+      - run:
+          name: The First Step
+          command: |
+            echo 'Hello World!'
+            echo 'This is the delivery pipeline'
+
+workflows:
+  version: 2
+  build-test-deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
