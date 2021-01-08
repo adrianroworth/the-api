@@ -46,14 +46,49 @@ jobs:
       - run:
           name: Lint codebase
           command: npx --no-install eslint .
+  build:
+    executor: docker-publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build docker image
+          command: |
+            docker build --no-cache -t reb/the-api .
+      - run:
+          name: Archive Docker Image
+          command: |
+            docker save -o image.tar reb/the-api:latest
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
+  deploy:
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "b5:64:73:f1:7a:4f:1e:75:38:c7:01:df:49:ca:18:44"
+      - run:
+           name: Deploy Over SSH
+           command: |
+             ssh $SSH_USER@$SSH_HOST "docker load"
 workflows:
   version: 2
   build-test-deploy:
     jobs:
       - build_for_test
-      - test:
-          requires:
-            - build_for_test
+#       - test:
+#           requires:
+#             - build_for_test
 #       - lint:
 #           requires:
 #             - build_for_test
+       - build:
+           requires:
+             - build_for_test # this `requires` is redundant - it is just here to maintain a linear workflow for now
+       - deploy:
+           requires:
+             - build_for_test
+           filters:
+             branches:
+               only: master # only deploy on the master branch
