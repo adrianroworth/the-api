@@ -65,6 +65,8 @@ jobs:
           paths:
             - ./image.tar
   deploy:
+    docker:
+      - image: circleci/node:12.16.1
     steps:
       - add_ssh_keys:
           fingerprints:
