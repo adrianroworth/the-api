@@ -76,19 +76,21 @@ workflows:
   version: 2
   build-test-deploy:
     jobs:
-      - build_for_test
+#       - build_for_test
 #       - test:
 #           requires:
 #             - build_for_test
 #       - lint:
 #           requires:
 #             - build_for_test
-       - build:
-           requires:
-             - build_for_test # this `requires` is redundant - it is just here to maintain a linear workflow for now
+#        - build:
+#            requires:
+#              - build_for_test # this `requires` is redundant - it is just here to maintain a linear workflow for now
+       - build
        - deploy:
            requires:
-             - build_for_test
+#              - build_for_test
+             - build
            filters:
              branches:
                only: master # only deploy on the master branch
