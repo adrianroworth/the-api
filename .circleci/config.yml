@@ -64,6 +64,7 @@ jobs:
           paths:
             - ./image.tar
   deploy:
+    executor: docker-publisher
     steps:
       - add_ssh_keys:
           fingerprints:
