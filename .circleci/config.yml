@@ -54,6 +54,6 @@ workflows:
       - test:
           requires:
             - build_for_test
-      - lint:
-          requires:
-            - build_for_test
+#       - lint:
+#           requires:
+#             - build_for_test
