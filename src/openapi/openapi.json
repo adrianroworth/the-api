@@ -1,0 +1,1340 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Texas Help 'Em API",
+        "description": "Manage a players hand in a given game of Texas Hold 'Em",
+        "version": "1.0.0",
+        "license": {
+            "name": "MIT"
+        },
+        "contact": {
+            "name": "API Support",
+            "email": "api@adrianroworth.co.uk"
+        }
+    },
+    "servers": [
+        {
+            "url": "/api/v1"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Hands"
+        }
+    ],
+    "paths": {
+        "/hands/": {
+            "post": {
+                "tags": ["Hands"],
+                "summary": "Gets all valid hand types for the set of cards posted",
+                "operationId": "getHands",
+                "x-requests": {
+                    "400": {
+                        "requestBody": {
+                            "content": {
+                                "application/vnd.api+json": {
+                                    "example": {
+                                        "data": {
+                                            "type": "hands",
+                                            "attributes": {
+                                                "cards": [
+                                                    "20-s",
+                                                    "3-x",
+                                                    "3-h",
+                                                    "10-s",
+                                                    "9-p",
+                                                    "6-s",
+                                                    "4-c"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "description": "Array of 7 card IDs",
+                    "required": true,
+                    "content": {
+                        "application/vnd.api+json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": ["data"],
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "items": {
+                                            "required": ["type", "attributes"],
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "type": {
+                                                    "enum": ["hands"]
+                                                },
+                                                "attributes": {
+                                                    "type": "object",
+                                                    "additionalProperties": false,
+                                                    "properties": {
+                                                        "cards": {
+                                                            "type": "array",
+                                                            "uniqueItems": true,
+                                                            "minItems": 7,
+                                                            "maxItems": 7,
+                                                            "items": {
+                                                                "type": "string",
+                                                                "pattern": "^([1-9]|1[0-2])-[s,h,d,c]$"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "example": {
+                                "data": {
+                                    "type": "hands",
+                                    "attributes": {
+                                        "cards": ["1-s", "3-s", "3-h", "10-s", "9-d", "6-s", "4-c"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "required": ["data"],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "additionalProperties": false,
+                                            "items": {
+                                                "required": ["type", "id", "attributes"],
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "type": {
+                                                        "enum": ["hands"]
+                                                    },
+                                                    "id": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "high-card",
+                                                            "pair",
+                                                            "two-pairs",
+                                                            "three-of-a-kind",
+                                                            "straight",
+                                                            "flush",
+                                                            "full-house",
+                                                            "four-of-a-kind",
+                                                            "straight-flush",
+                                                            "royal-flush"
+                                                        ]
+                                                    },
+                                                    "attributes": {
+                                                        "type": "object",
+                                                        "required": [
+                                                            "cards",
+                                                            "description",
+                                                            "precedence",
+                                                            "name"
+                                                        ],
+                                                        "additionalProperties": false,
+                                                        "properties": {
+                                                            "cards": {
+                                                                "type": "object",
+                                                                "additionalProperties": false,
+                                                                "required": ["best", "all"],
+                                                                "properties": {
+                                                                    "best": {
+                                                                        "anyOf": [
+                                                                            {
+                                                                                "type": "object",
+                                                                                "required": [
+                                                                                    "cardCode",
+                                                                                    "cardValue",
+                                                                                    "cardSuit",
+                                                                                    "cardName",
+                                                                                    "card"
+                                                                                ],
+                                                                                "additionalProperties": false,
+                                                                                "properties": {
+                                                                                    "cardCode": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "cardValue": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "cardSuit": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "cardName": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "card": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                "type": "array",
+                                                                                "items": {
+                                                                                    "type": "object",
+                                                                                    "required": [
+                                                                                        "cardCode",
+                                                                                        "cardValue",
+                                                                                        "cardSuit",
+                                                                                        "cardName",
+                                                                                        "card"
+                                                                                    ],
+                                                                                    "additionalProperties": false,
+                                                                                    "properties": {
+                                                                                        "cardCode": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "cardValue": {
+                                                                                            "type": "integer"
+                                                                                        },
+                                                                                        "cardSuit": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "cardName": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "card": {
+                                                                                            "type": "string"
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "all": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "anyOf": [
+                                                                                {
+                                                                                    "type": "object",
+                                                                                    "required": [
+                                                                                        "cardCode",
+                                                                                        "cardValue",
+                                                                                        "cardSuit",
+                                                                                        "cardName",
+                                                                                        "card"
+                                                                                    ],
+                                                                                    "additionalProperties": false,
+                                                                                    "properties": {
+                                                                                        "cardCode": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "cardValue": {
+                                                                                            "type": "integer"
+                                                                                        },
+                                                                                        "cardSuit": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "cardName": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "card": {
+                                                                                            "type": "string"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "type": "array",
+                                                                                    "items": {
+                                                                                        "type": "object",
+                                                                                        "required": [
+                                                                                            "cardCode",
+                                                                                            "cardValue",
+                                                                                            "cardSuit",
+                                                                                            "cardName",
+                                                                                            "card"
+                                                                                        ],
+                                                                                        "additionalProperties": false,
+                                                                                        "properties": {
+                                                                                            "cardCode": {
+                                                                                                "type": "string"
+                                                                                            },
+                                                                                            "cardValue": {
+                                                                                                "type": "integer"
+                                                                                            },
+                                                                                            "cardSuit": {
+                                                                                                "type": "string"
+                                                                                            },
+                                                                                            "cardName": {
+                                                                                                "type": "string"
+                                                                                            },
+                                                                                            "card": {
+                                                                                                "type": "string"
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "maxLength": 200
+                                                            },
+                                                            "precedence": {
+                                                                "type": "number",
+                                                                "minimum": 0,
+                                                                "maximum": 9
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "maxLength": 20
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "type": "hands",
+                                            "id": "high-card",
+                                            "attributes": {
+                                                "cards": {
+                                                    "best": {
+                                                        "cardCode": "1-s",
+                                                        "cardValue": 1,
+                                                        "cardSuit": "spades",
+                                                        "cardName": "ace",
+                                                        "card": "ace of spades"
+                                                    },
+                                                    "all": [
+                                                        {
+                                                            "cardCode": "1-s",
+                                                            "cardValue": 1,
+                                                            "cardSuit": "spades",
+                                                            "cardName": "ace",
+                                                            "card": "ace of spades"
+                                                        }
+                                                    ]
+                                                },
+                                                "description": "High ace",
+                                                "precedence": 0,
+                                                "name": "High Card"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "There is an issue with the request",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["errors"],
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "required": ["status", "title", "detail"],
+                                                "properties": {
+                                                    "status": {
+                                                        "enum": [400]
+                                                    },
+                                                    "title": {
+                                                        "enum": ["400 Bad Request"]
+                                                    },
+                                                    "detail": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": 400,
+                                            "title": "400 Bad Request",
+                                            "detail": "Request JSON is malformed"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hands/{handName}": {
+            "post": {
+                "tags": ["Hands"],
+                "summary": "Validates a set of cards against a hand type",
+                "operationId": "getHand",
+                "parameters": [
+                    {
+                        "name": "handName",
+                        "in": "path",
+                        "required": true,
+                        "description": "The name of the hand type",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "high-card",
+                                "pair",
+                                "two-pairs",
+                                "three-of-a-kind",
+                                "straight",
+                                "flush",
+                                "full-house",
+                                "four-of-a-kind",
+                                "straight-flush",
+                                "royal-flush"
+                            ],
+                            "pattern": "^[a-zA-Z-]{1,15}$"
+                        },
+                        "example": "full-house"
+                    }
+                ],
+                "x-requests": {
+                    "400": {
+                        "requestBody": {
+                            "content": {
+                                "application/vnd.api+json": {
+                                    "example": {
+                                        "data": {
+                                            "type": "hands",
+                                            "attributes": {
+                                                "cards": [
+                                                    "20-s",
+                                                    "3-x",
+                                                    "3-h",
+                                                    "10-s",
+                                                    "9-p",
+                                                    "6-s",
+                                                    "4-c"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "parameters": [
+                            {
+                                "name": "handName",
+                                "example": "blah-blah-not-real-hand-name"
+                            }
+                        ]
+                    }
+                },
+                "requestBody": {
+                    "description": "Array of 7 card IDs",
+                    "required": true,
+                    "content": {
+                        "application/vnd.api+json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": ["data"],
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "items": {
+                                            "required": ["type", "attributes"],
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "type": {
+                                                    "enum": ["hands"]
+                                                },
+                                                "attributes": {
+                                                    "type": "object",
+                                                    "additionalProperties": false,
+                                                    "properties": {
+                                                        "cards": {
+                                                            "type": "array",
+                                                            "uniqueItems": true,
+                                                            "minItems": 7,
+                                                            "maxItems": 7,
+                                                            "items": {
+                                                                "type": "string",
+                                                                "pattern": "^([1-9]|1[0-2])-[s,h,d,c]$"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "example": {
+                                "data": {
+                                    "type": "hands",
+                                    "attributes": {
+                                        "cards": ["1-s", "3-s", "3-h", "10-s", "9-d", "9-s", "9-c"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "required": ["data"],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "additionalProperties": false,
+                                            "items": {
+                                                "required": ["type", "id", "attributes"],
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "type": {
+                                                        "enum": ["hands"]
+                                                    },
+                                                    "id": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "high-card",
+                                                            "pair",
+                                                            "two-pairs",
+                                                            "three-of-a-kind",
+                                                            "straight",
+                                                            "flush",
+                                                            "full-house",
+                                                            "four-of-a-kind",
+                                                            "straight-flush",
+                                                            "royal-flush"
+                                                        ]
+                                                    },
+                                                    "attributes": {
+                                                        "type": "object",
+                                                        "required": [
+                                                            "cards",
+                                                            "description",
+                                                            "precedence",
+                                                            "name"
+                                                        ],
+                                                        "additionalProperties": false,
+                                                        "properties": {
+                                                            "cards": {
+                                                                "type": "object",
+                                                                "additionalProperties": false,
+                                                                "required": ["best", "all"],
+                                                                "properties": {
+                                                                    "best": {
+                                                                        "anyOf": [
+                                                                            {
+                                                                                "type": "object",
+                                                                                "required": [
+                                                                                    "cardCode",
+                                                                                    "cardValue",
+                                                                                    "cardSuit",
+                                                                                    "cardName",
+                                                                                    "card"
+                                                                                ],
+                                                                                "additionalProperties": false,
+                                                                                "properties": {
+                                                                                    "cardCode": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "cardValue": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "cardSuit": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "cardName": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "card": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                "type": "array",
+                                                                                "items": {
+                                                                                    "type": "object",
+                                                                                    "required": [
+                                                                                        "cardCode",
+                                                                                        "cardValue",
+                                                                                        "cardSuit",
+                                                                                        "cardName",
+                                                                                        "card"
+                                                                                    ],
+                                                                                    "additionalProperties": false,
+                                                                                    "properties": {
+                                                                                        "cardCode": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "cardValue": {
+                                                                                            "type": "integer"
+                                                                                        },
+                                                                                        "cardSuit": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "cardName": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "card": {
+                                                                                            "type": "string"
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "all": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "anyOf": [
+                                                                                {
+                                                                                    "type": "object",
+                                                                                    "required": [
+                                                                                        "cardCode",
+                                                                                        "cardValue",
+                                                                                        "cardSuit",
+                                                                                        "cardName",
+                                                                                        "card"
+                                                                                    ],
+                                                                                    "additionalProperties": false,
+                                                                                    "properties": {
+                                                                                        "cardCode": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "cardValue": {
+                                                                                            "type": "integer"
+                                                                                        },
+                                                                                        "cardSuit": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "cardName": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "card": {
+                                                                                            "type": "string"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "type": "array",
+                                                                                    "items": {
+                                                                                        "type": "object",
+                                                                                        "required": [
+                                                                                            "cardCode",
+                                                                                            "cardValue",
+                                                                                            "cardSuit",
+                                                                                            "cardName",
+                                                                                            "card"
+                                                                                        ],
+                                                                                        "additionalProperties": false,
+                                                                                        "properties": {
+                                                                                            "cardCode": {
+                                                                                                "type": "string"
+                                                                                            },
+                                                                                            "cardValue": {
+                                                                                                "type": "integer"
+                                                                                            },
+                                                                                            "cardSuit": {
+                                                                                                "type": "string"
+                                                                                            },
+                                                                                            "cardName": {
+                                                                                                "type": "string"
+                                                                                            },
+                                                                                            "card": {
+                                                                                                "type": "string"
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "maxLength": 200
+                                                            },
+                                                            "precedence": {
+                                                                "type": "number",
+                                                                "minimum": 0,
+                                                                "maximum": 9
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "maxLength": 20
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "data": {
+                                        "type": "hands",
+                                        "id": "pair",
+                                        "attributes": {
+                                            "cards": {
+                                                "best": [
+                                                    {
+                                                        "cardCode": "3-s",
+                                                        "cardValue": 3,
+                                                        "cardSuit": "spades",
+                                                        "cardName": "three",
+                                                        "card": "three of spades"
+                                                    },
+                                                    {
+                                                        "cardCode": "3-h",
+                                                        "cardValue": 3,
+                                                        "cardSuit": "hearts",
+                                                        "cardName": "three",
+                                                        "card": "three of hearts"
+                                                    }
+                                                ],
+                                                "all": [
+                                                    [
+                                                        {
+                                                            "cardCode": "3-s",
+                                                            "cardValue": 3,
+                                                            "cardSuit": "spades",
+                                                            "cardName": "three",
+                                                            "card": "three of spades"
+                                                        },
+                                                        {
+                                                            "cardCode": "3-h",
+                                                            "cardValue": 3,
+                                                            "cardSuit": "hearts",
+                                                            "cardName": "three",
+                                                            "card": "three of hearts"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "description": "Pair of threes"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "There is an issue with the request",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["errors"],
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "required": ["status", "title", "detail"],
+                                                "properties": {
+                                                    "status": {
+                                                        "enum": [400]
+                                                    },
+                                                    "title": {
+                                                        "enum": ["400 Bad Request"]
+                                                    },
+                                                    "detail": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": 400,
+                                            "title": "400 Bad Request",
+                                            "detail": "Request JSON is malformed"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The specified resource was not found",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["errors"],
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "required": ["status", "title", "detail"],
+                                                "properties": {
+                                                    "status": {
+                                                        "enum": [404]
+                                                    },
+                                                    "title": {
+                                                        "enum": ["404 Not Found"]
+                                                    },
+                                                    "detail": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": 404,
+                                            "title": "404 Not Found",
+                                            "detail": "Resource /api/v1/url does not exist"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hands/{handName}/precedence": {
+            "get": {
+                "tags": ["Hands"],
+                "summary": "Get the precedence of a specified hand name",
+                "operationId": "getHandPrecedence",
+                "parameters": [
+                    {
+                        "name": "handName",
+                        "in": "path",
+                        "required": true,
+                        "description": "The name of the hand type",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "high-card",
+                                "pair",
+                                "two-pairs",
+                                "three-of-a-kind",
+                                "straight",
+                                "flush",
+                                "full-house",
+                                "four-of-a-kind",
+                                "straight-flush",
+                                "royal-flush"
+                            ],
+                            "pattern": "^[a-zA-Z-]{1,15}$"
+                        },
+                        "example": "full-house"
+                    }
+                ],
+                "x-requests": {
+                    "404": {
+                        "parameters": [
+                            {
+                                "name": "handName",
+                                "example": "not-a-hand-name"
+                            }
+                        ]
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["data"],
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "required": ["type", "id", "attributes"],
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "type": {
+                                                    "enum": ["precedences"]
+                                                },
+                                                "id": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "high-card",
+                                                        "pair",
+                                                        "two-pairs",
+                                                        "three-of-a-kind",
+                                                        "straight",
+                                                        "flush",
+                                                        "full-house",
+                                                        "four-of-a-kind",
+                                                        "straight-flush",
+                                                        "royal-flush"
+                                                    ]
+                                                },
+                                                "attributes": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "precedence": {
+                                                            "type": "number"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "data": {
+                                        "type": "precedences",
+                                        "id": "full-house",
+                                        "attributes": {
+                                            "precedence": 5
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The specified resource was not found",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["errors"],
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "required": ["status", "title", "detail"],
+                                                "properties": {
+                                                    "status": {
+                                                        "enum": [404]
+                                                    },
+                                                    "title": {
+                                                        "enum": ["404 Not Found"]
+                                                    },
+                                                    "detail": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": 404,
+                                            "title": "404 Not Found",
+                                            "detail": "Resource /api/v1/url does not exist"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hands/{handName}/description": {
+            "get": {
+                "tags": ["Hands"],
+                "summary": "Get the description of a specified hand name",
+                "operationId": "getHandDescription",
+                "parameters": [
+                    {
+                        "name": "handName",
+                        "in": "path",
+                        "required": true,
+                        "description": "The name of the hand type",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "high-card",
+                                "pair",
+                                "two-pairs",
+                                "three-of-a-kind",
+                                "straight",
+                                "flush",
+                                "full-house",
+                                "four-of-a-kind",
+                                "straight-flush",
+                                "royal-flush"
+                            ],
+                            "pattern": "^[a-zA-Z-]{1,15}$"
+                        },
+                        "example": "full-house"
+                    }
+                ],
+                "x-requests": {
+                    "404": {
+                        "parameters": [
+                            {
+                                "name": "handName",
+                                "example": "not-a-hand-name"
+                            }
+                        ]
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["data"],
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "required": ["type", "id", "attributes"],
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "type": {
+                                                    "enum": ["descriptions"]
+                                                },
+                                                "id": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "high-card",
+                                                        "pair",
+                                                        "two-pairs",
+                                                        "three-of-a-kind",
+                                                        "straight",
+                                                        "flush",
+                                                        "full-house",
+                                                        "four-of-a-kind",
+                                                        "straight-flush",
+                                                        "royal-flush"
+                                                    ]
+                                                },
+                                                "attributes": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "description": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "data": {
+                                        "type": "descriptions",
+                                        "id": "full-house",
+                                        "attributes": {
+                                            "description": "Combination of three of a kind and a pair"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The specified resource was not found",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["errors"],
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "required": ["status", "title", "detail"],
+                                                "properties": {
+                                                    "status": {
+                                                        "enum": [404]
+                                                    },
+                                                    "title": {
+                                                        "enum": ["404 Not Found"]
+                                                    },
+                                                    "detail": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": 404,
+                                            "title": "404 Not Found",
+                                            "detail": "Resource /api/v1/url does not exist"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "handName": {
+                "name": "handName",
+                "in": "path",
+                "required": true,
+                "description": "The name of the hand type",
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "high-card",
+                        "pair",
+                        "two-pairs",
+                        "three-of-a-kind",
+                        "straight",
+                        "flush",
+                        "full-house",
+                        "four-of-a-kind",
+                        "straight-flush",
+                        "royal-flush"
+                    ],
+                    "pattern": "^[a-zA-Z-]{1,15}$"
+                },
+                "example": "full-house"
+            }
+        },
+        "responses": {
+            "BadRequest": {
+                "description": "There is an issue with the request",
+                "content": {
+                    "application/vnd.api+json": {
+                        "schema": {
+                            "type": "object",
+                            "required": ["errors"],
+                            "properties": {
+                                "errors": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": ["status", "title", "detail"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": [400]
+                                            },
+                                            "title": {
+                                                "enum": ["400 Bad Request"]
+                                            },
+                                            "detail": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "status": 400,
+                                    "title": "400 Bad Request",
+                                    "detail": "Request JSON is malformed"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "UnauthorizedError": {
+                "description": "Access token is missing or invalid",
+                "content": {
+                    "application/vnd.api+json": {
+                        "schema": {
+                            "type": "object",
+                            "required": ["errors"],
+                            "properties": {
+                                "errors": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": ["status", "title", "detail"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": [401]
+                                            },
+                                            "title": {
+                                                "enum": ["401 Unauthorized"]
+                                            },
+                                            "detail": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "status": 401,
+                                    "detail": "No authorization token was found"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "Forbidden": {
+                "description": "The JWT doesn't permit access to this endpoint",
+                "content": {
+                    "application/vnd.api+json": {
+                        "schema": {
+                            "type": "object",
+                            "required": ["errors"],
+                            "properties": {
+                                "errors": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": ["status", "title", "detail"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": [403]
+                                            },
+                                            "title": {
+                                                "enum": ["403 Forbidden"]
+                                            },
+                                            "detail": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "status": 403,
+                                    "title": "403 Forbidden",
+                                    "detail": "Insufficient scope"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "NotFound": {
+                "description": "The specified resource was not found",
+                "content": {
+                    "application/vnd.api+json": {
+                        "schema": {
+                            "type": "object",
+                            "required": ["errors"],
+                            "properties": {
+                                "errors": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": ["status", "title", "detail"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": [404]
+                                            },
+                                            "title": {
+                                                "enum": ["404 Not Found"]
+                                            },
+                                            "detail": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "status": 404,
+                                    "title": "404 Not Found",
+                                    "detail": "Resource /api/v1/url does not exist"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "Conflict": {
+                "description": "Conflict",
+                "content": {
+                    "application/vnd.api+json": {
+                        "schema": {
+                            "type": "object",
+                            "required": ["errors"],
+                            "properties": {
+                                "errors": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": ["status", "title", "detail"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": [409]
+                                            },
+                                            "title": {
+                                                "enum": ["409 Conflict"]
+                                            },
+                                            "detail": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "status": 409,
+                                    "title": "409 conflict",
+                                    "detail": "Endpoint /api/v1/questionnaires/68653be7-877f-4106-b91e-4ba8dac883f3/sections/system/answers accepts only resources of type \"answers\""
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
