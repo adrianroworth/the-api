@@ -26,7 +26,7 @@
         "husky": "^2.3.0",
         "jest": "^24.8.0",
         "jest-json-schema": "^2.0.2",
-        "lint-staged": "^8.1.7",
+        "lint-staged": "^13.1.0",
         "node-sass": "^4.12.0",
         "nodemon": "^1.19.1",
         "speccy": "github:wework/speccy#740d19d88935db7735250c16abc2ad09256b5854",
